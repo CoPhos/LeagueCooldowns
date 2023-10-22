@@ -1,25 +1,32 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, createContext } from 'react'
 import styled from 'styled-components'
 
 import ChampionElement from './ChampionElement'
+import ChampionAbility from './ChampionAbility'
 
 import {data} from '../../assets/championNames'
 
+const Themecontext = createContext(null)
+
 function ChampionSelect() {
     let cooldownInitialValues = {
-        q: 0,
-        w: 0,
-        e: 0,
-        r: 0,
-        d: 0,
-        f: 0,
+        q: 10,
+        w: 16,
+        e: 22,
+        r: 80,
+        d: 280,
+        f: 320,
+        triangle: 10,
+        minions: 4,
         frequency: 'low',
     }
     const [championSelected, setChampionSelected] = useState('placeholder')
     const [summonerSpell, setSummonerSpell] = useState('Heal')
     const [cooldownValues, setCooldownValues] = useState(cooldownInitialValues)
     const [championList, setChampionList] = useState([])
-    const [start, setStart] = useState(false)
+    const [triangle, setTriangle] = useState('No')
+    const [minions, setMinions] = useState('No')
+    const [start, setStart] = useState(true)
 
     function listAllChampionIcons(championSelected, setState) {
         return (
@@ -199,69 +206,143 @@ function ChampionSelect() {
     }
 
     return (
-        <Fragment>
-            <ChampionsWrapper>
-                {data.championNames.map((championName) => {
-                    return listAllChampionIcons(
-                        championName,
-                        setChampionSelected
-                    )
-                })}
-            </ChampionsWrapper>
-            <ChampionParametersWrapper>
-                <ChampionDetailsWrapper>
-                    <ChampionDetailsContainer>
-                        {championDetails()}
-                    </ChampionDetailsContainer>
-                    {console.log(start)}
-                </ChampionDetailsWrapper>
-                <AddChampionDiv>
-                    <label htmlFor="frequency">
-                        Choose abilities usage frequency:
-                    </label>
-                    <select
-                        id="frequency"
-                        onChange={(e) =>
-                            setCooldownValues({
-                                ...cooldownValues,
-                                frequency: e.currentTarget.value,
-                            })
-                        }
-                        value={cooldownValues.frequency}
-                    >
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                    <StyledButton
-                        className="button1"
-                        onClick={(e) => addChampion(e)}
-                        theme={{ color: '#008cba' }}
-                    >
-                        Add champion
-                    </StyledButton>
-                </AddChampionDiv>
-            </ChampionParametersWrapper>
-            <ListDiv>
-                {championList}
-                <StartResetDiv>
-                    <StyledButton
-                        className="button1"
-                        onClick={(e) => addChampion(e)}
-                        theme={{ color: '#FF0000' }}
-                    >
-                        Reset
-                    </StyledButton>
-                    <StyledButton
-                        className="button1"
-                        onClick={(e) => setStart(true)}
-                        theme={{ color: '#008cba' }}
-                    >
-                        Start
-                    </StyledButton>
-                </StartResetDiv>
-            </ListDiv>
-        </Fragment>
+        <Themecontext.Provider value={start}>
+            <Fragment>
+                <ChampionsWrapper>
+                    {data.championNames.map((championName) => {
+                        return listAllChampionIcons(
+                            championName,
+                            setChampionSelected
+                        )
+                    })}
+                </ChampionsWrapper>
+                <ChampionParametersWrapper>
+                    <ChampionDetailsWrapper>
+                        <ChampionDetailsContainer>
+                            {championDetails()}
+                        </ChampionDetailsContainer>
+                        {console.log(start)}
+                    </ChampionDetailsWrapper>
+                    <AddChampionDiv>
+                        <label htmlFor="triangle">Can be triangle?</label>
+                        <select
+                            id="triangle"
+                            onChange={(e) => setTriangle(e.currentTarget.value)}
+                            value={triangle}
+                        >
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <CooldownInput
+                            type="number"
+                            id="triangle"
+                            name="triangle"
+                            min="0"
+                            value={cooldownValues.triangle}
+                            onChange={(e) =>
+                                setCooldownValues({
+                                    ...cooldownValues,
+                                    triangle: e.currentTarget.value,
+                                })
+                            }
+                        />
+
+                        <label htmlFor="minions">Minions?</label>
+                        <select
+                            id="minions"
+                            onChange={(e) => setMinions(e.currentTarget.value)}
+                            value={minions}
+                        >
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+
+                        <CooldownInput
+                            type="number"
+                            id="minions"
+                            name="minions"
+                            min="0"
+                            value={cooldownValues.minions}
+                            onChange={(e) =>
+                                setCooldownValues({
+                                    ...cooldownValues,
+                                    minions: e.currentTarget.value,
+                                })
+                            }
+                        />
+
+                        <label htmlFor="frequency">
+                            Choose abilities usage frequency:
+                        </label>
+                        <select
+                            id="frequency"
+                            onChange={(e) =>
+                                setCooldownValues({
+                                    ...cooldownValues,
+                                    frequency: e.currentTarget.value,
+                                })
+                            }
+                            value={cooldownValues.frequency}
+                        >
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <StyledButton
+                            className="button1"
+                            onClick={(e) => addChampion(e)}
+                            theme={{ color: '#008cba' }}
+                        >
+                            Add champion
+                        </StyledButton>
+                    </AddChampionDiv>
+                </ChampionParametersWrapper>
+                <ListDiv>
+                    {championList}
+                    {triangle == 'Yes' ? (
+                        <ChampionAbility
+                            image={'triangle2.JPG'}
+                            cooldownValue={cooldownValues.triangle}
+                            sizes={'200px'}
+                        ></ChampionAbility>
+                    ) : (
+                        <div></div>
+                    )}
+                    {minions == 'Yes' ? (
+                        <StartResetDiv>
+                            <ChampionAbility
+                                image={'blueminion.webp'}
+                                cooldownValue={cooldownValues.minions}
+                                sizes={'140px'}
+                            ></ChampionAbility>
+                            <ChampionAbility
+                                image={'redminion.webp'}
+                                sizes={'140px'}
+                                cooldownValue={cooldownValues.minions}
+                            ></ChampionAbility>
+                        </StartResetDiv>
+                    ) : (
+                        <div></div>
+                    )}
+                    {/* <StartResetDiv>
+                        <StyledButton
+                            className="button1"
+                            onClick={(e) => setStart(false)}
+                            theme={{ color: '#FF0000' }}
+                        >
+                            Reset
+                        </StyledButton>
+                        <StyledButton
+                            className="button1"
+                            onClick={(e) => setStart(true)}
+                            theme={{ color: '#008cba' }}
+                        >
+                            Start
+                        </StyledButton>
+                    </StartResetDiv> */}
+                </ListDiv>
+            </Fragment>
+        </Themecontext.Provider>
     )
 }
 
@@ -269,6 +350,7 @@ const ListDiv = styled.div`
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-height: 600px;
 `
 const StartResetDiv = styled.div`
     display: flex;

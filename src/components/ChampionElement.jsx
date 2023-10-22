@@ -1,36 +1,16 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState } from 'react'
 
 import styled from 'styled-components'
+
+import ChampionAbility from './ChampionAbility'
 
 function ChampionElement({
     championSelected,
     summonerSpell,
-    start,
+    
     cooldownValues,
 }) {
-    const [display, setDisplay] = useState(true)
-    let time = 0
-    let number
-
-    setInterval(() => {
-        number = Math.floor(Math.random() * (10 - 1) + 1)
-        console.log(number)
-    }, 1000);
-
-  useEffect(() => {
-      let interval = null
-      if (start) {
-          
-              if (number < 4) {
-                  console.log('in')
-                  setDisplay(!display)
-              }
-          
-          
-      }
-  }, [number])
-
-
+    
     return (
         <ChampionDetailsContainer>
             <ChampionDetailsIcon
@@ -40,64 +20,36 @@ function ChampionElement({
             ></ChampionDetailsIcon>
             <ChampionAbilititesContainer>
                 <Fragment>
-                    <div>
-                        {display && (
-                            <ChampionAbilitiesContainer
-                                key={championSelected + 1}
-                                theme={{
-                                    img: championSelected + 'Q.png',
-                                }}
-                            ></ChampionAbilitiesContainer>
-                        )}
-                    </div>
-                    <div>
-                        {display && (
-                            <ChampionAbilitiesContainer
-                                key={championSelected + 2}
-                                theme={{
-                                    img: championSelected + 'W.png',
-                                }}
-                            ></ChampionAbilitiesContainer>
-                        )}
-                    </div>
-                    <div>
-                        {display && (
-                            <ChampionAbilitiesContainer
-                                key={championSelected + 3}
-                                theme={{
-                                    img: championSelected + 'E.png',
-                                }}
-                            ></ChampionAbilitiesContainer>
-                        )}
-                    </div>
-                    <div>
-                        {display && (
-                            <ChampionAbilitiesContainer
-                                key={championSelected + 4}
-                                theme={{
-                                    img: championSelected + 'R.png',
-                                }}
-                            ></ChampionAbilitiesContainer>
-                        )}
-                    </div>
-                    {display && (
-                        <ChampionAbilitiesContainer
-                            key={championSelected + 5}
-                            theme={{
-                                img: summonerSpell + '.webp',
-                            }}
-                        ></ChampionAbilitiesContainer>
-                    )}
-                    <div>
-                        {display && (
-                            <ChampionAbilitiesContainer
-                                key={championSelected + 6}
-                                theme={{
-                                    img: 'Flash.webp',
-                                }}
-                            ></ChampionAbilitiesContainer>
-                        )}
-                    </div>
+                    <ChampionAbility
+                        image={championSelected + 'Q.png'}
+                        cooldownValue={cooldownValues.q}
+                        sizes={'45px'}
+                    ></ChampionAbility>
+                    <ChampionAbility
+                        image={championSelected + 'W.png'}
+                        cooldownValue={cooldownValues.w}
+                        sizes={'45px'}
+                    ></ChampionAbility>
+                    <ChampionAbility
+                        image={championSelected + 'E.png'}
+                        cooldownValue={cooldownValues.e}
+                        sizes={'45px'}
+                    ></ChampionAbility>
+                    <ChampionAbility
+                        image={championSelected + 'R.png'}
+                        cooldownValue={cooldownValues.r}
+                        sizes={'45px'}
+                    ></ChampionAbility>
+                    <ChampionAbility
+                        image={summonerSpell + '.webp'}
+                        cooldownValue={cooldownValues.d}
+                        sizes={'45px'}
+                    ></ChampionAbility>
+                    <ChampionAbility
+                        image={'Flash.webp'}
+                        cooldownValue={cooldownValues.f}
+                        sizes={'45px'}
+                    ></ChampionAbility>
                 </Fragment>
             </ChampionAbilititesContainer>
         </ChampionDetailsContainer>
@@ -134,19 +86,6 @@ const ChampionAbilititesContainer = styled.div`
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-`
-
-const ChampionAbilitiesContainer = styled.div`
-    min-width: 45px;
-    min-height: 45px;
-    max-width: 45px;
-    max-height: 45px;
-    background-image: url(http://localhost:3000/Abilities/${(props) =>
-        props.theme.img});
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    cursor: normal;
 `
 const SummonerSpellDiv = styled.div`
     display: flex;
